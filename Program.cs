@@ -1,6 +1,8 @@
 ﻿
-using ClosedXML.Excel;
+
 using Npgsql;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 using System.Globalization;
 
 namespace DST_AON_INFORMES
@@ -26,7 +28,7 @@ namespace DST_AON_INFORMES
             switch (macro)
             {
                 case "1":
-                    await test1();
+                    DailyCalls();
                     break;
                 case "2":
                     await test2();
@@ -48,8 +50,9 @@ namespace DST_AON_INFORMES
             
 
         }
-        private async Task test1()
+        private void DailyCalls()
         {
+            string today = GetToday();
             try
             {
                 /*
@@ -78,15 +81,47 @@ namespace DST_AON_INFORMES
                 //EXCEL
 
                 //BUSCADOR DE COLUMNAS
-                string fileName = "test.xlsx";
-                XLWorkbook wb = new XLWorkbook(fileName);
-                
-                IXLWorksheet ws = wb.Worksheet("FEBRERO 2022");
 
-                IXLRow r = ws.Row(15);
+                string fileName = "DAILY_CALL.xls";
+
+
+                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                IWorkbook wb = new HSSFWorkbook(fs);
+
+
+
+                ISheet ws = wb.GetSheet("Call Disposition");
+
+
+                IRow row = ws.GetRow(12);
+                foreach (ICell cell in row)
+                {
+                    //{7/5/19}
+                    if (cell.NumericCellValue.ToString() == today)
+                    {
+
+                    }
+
+
+
+                }
+
+                /*
+                Workbook workbook = new Workbook();
+
+                workbook.Open(fileName);
+
+
+                Worksheet ws = wb.Sheet("Call Disposition");
+
+                Row r = ws.Row(13);
+
                 foreach (IXLCell cell in r.Cells()) 
                 {
-                    if (cell.Value.ToString() == "02/02/2022 0:00:00") 
+
+                    if (cell.Value.ToString() == today) 
                     {
 
                         string letraColumna = cell.Address.ColumnLetter;
@@ -94,13 +129,13 @@ namespace DST_AON_INFORMES
 
                 }
                 
-
-                
-
-                wb.Save();
+                */
 
 
-                
+                //wb.Save();
+
+
+
 
 
 
@@ -108,14 +143,14 @@ namespace DST_AON_INFORMES
 
                 //conn.Close();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
             }
 
-           
-            
+
+
         }
         private async Task test2()
         {
@@ -151,6 +186,13 @@ namespace DST_AON_INFORMES
                     }
                 }
             }
+            return fecha;
+        }
+        private static string GetToday()
+        {
+          
+              string fecha = DateTime.Now.ToString("dd/MM/yyyy");
+               
             return fecha;
         }
     }

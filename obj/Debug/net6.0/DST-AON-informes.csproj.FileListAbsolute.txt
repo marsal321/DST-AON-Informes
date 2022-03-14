@@ -39,3 +39,13 @@ S:\Projectes\DST-AON-informes\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.0\Mi
 S:\Projectes\DST-AON-informes\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
 S:\Projectes\DST-AON-informes\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
 S:\Projectes\DST-AON-informes\obj\Debug\net6.0\DST-AON-informes.csproj.CopyComplete
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\NPOI.OOXML.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\NPOI.OpenXml4Net.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\NPOI.OpenXmlFormats.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\NPOI.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\ICSharpCode.SharpZipLib.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\System.Security.Permissions.dll
+S:\Projectes\DST-AON-Informes\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
