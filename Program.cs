@@ -72,32 +72,17 @@ namespace DST_AON_INFORMES
 
                 Console.WriteLine("Realizando consultas...");
 
-
-
-
-
-                //EXCEL
-
-                //BUSCADOR DE COLUMNAS
+                //EXCEL1
 
                 string fileName = "DAILY_CALL.xls";
-
                 FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
 
-
-                
-
-
-
-                    IWorkbook wb = new HSSFWorkbook(fs);
-
+                IWorkbook wb = new HSSFWorkbook(fs);
                 ISheet ws = wb.GetSheet("Call Disposition");
                 IRow row = ws.GetRow(12);//fechas
                 int columna = 0;
                 bool encontrada = false;
                 
-
-
                 foreach (ICell cell in row)
                 {
                     
@@ -105,16 +90,43 @@ namespace DST_AON_INFORMES
                     {
                          columna = cell.ColumnIndex;//dia
                         encontrada = true;
+                        break;
                     }
 
-
-
                 }
-                //Total Leads Loaded 14
-                //Total Completes 15
-                //Total Contacts 16
-                //Total Elegible Contacts(see Call disposition) 17
-                //Call Back 18
+                // Busy    14
+                //NA No Answer   15
+                //ST Sit Tones   16
+                //CB Call Back   17
+                //AB Abandome(predictive dialer)    18
+                //AM Answering Machine   19
+                //BS Cb 2 level  20
+                //SA Successful Sales    24
+                //QA QA Canceled Sale    25
+                //BR Buyers Remorse  26
+                //AE Already Enrolled    28
+                //NI No interested   29
+                //DA Do not GDPR(Contact)   30
+                //LR Literature Requested    31
+                //BC Business Partner Complaint  32
+                //CC Customer Cancelled  34
+                //IA Invalid Age 35
+                //BP Business Phone  36
+                //DC Do not Call 37
+                //DS Do not Solicit at All   38
+                //IC Ineligible Contract 39
+                //PC Not able to contact in calling window(PC)  46
+                //DD Deceased    47
+                //HU Hang up 48
+                //OL Other Languages 49
+                //WN / CN   Wrong number    50
+                //AS / TS   Agency suppressed/ Robinson 51
+                //UA Closed by Kill Fields   52
+                //DR Do not GDPR 53
+                //CS Client suppressed   54
+
+
+
                 if (encontrada)
                 {
                     while (await dataReader.ReadAsync()) 
@@ -126,6 +138,8 @@ namespace DST_AON_INFORMES
                         cellEdit.SetCellValue("0000000000");
                     }
                 }
+
+
                 wb.Write(fs);
                 //cannot acces a closed file npoi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 wb.Close();
@@ -148,7 +162,11 @@ namespace DST_AON_INFORMES
         {
             Console.WriteLine("2 ok");
         }
-       
+        private async Task test2()
+        {
+            Console.WriteLine("2 ok");
+        }
+
         /// <summary>
         /// Coge la fecha de hoy con los diferents formatos
         /// </summary>
