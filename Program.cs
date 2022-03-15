@@ -28,7 +28,7 @@ namespace DST_AON_INFORMES
             switch (macro)
             {
                 case "1":
-                    DailyCalls();
+                    await DailyCalls();
                     break;
                 case "2":
                     await test2();
@@ -50,103 +50,95 @@ namespace DST_AON_INFORMES
             
 
         }
-        private void DailyCalls()
+        private async Task DailyCalls()
         {
-            string today = GetToday();
+            string todayDB = GetToday(3);
+            string todaymin = GetToday(1);
+            string sql = "";
             try
             {
-                /*
+                
             //CONNEXION
-                string connString =
-                "Host=10.255.169.250;Port=9628;Username=cd10c546-53ab-4116-8ce0-80b39fb57242;Password=c7b349376d1294c52878d77144d3196e;Database=cd10c546-53ab-4116-8ce0-80b39fb57242";
+                string connString ="Host=10.255.169.250;Port=9628;Username=cd10c546-53ab-4116-8ce0-80b39fb57242;Password=c7b349376d1294c52878d77144d3196e;Database=cd10c546-53ab-4116-8ce0-80b39fb57242";
                
                 await using var conn = new NpgsqlConnection(connString);
                 await conn.OpenAsync();
-            //PARAMETROS
-                Console.WriteLine("Fecha dd/mm/yyyy (enter para fecha de hoy):");
-                String? fecha = Console.ReadLine();
-                fecha = CheckDate(fecha);
-                var fechaFormat = Convert.ToDateTime(fecha).ToString("MM/dd/yyyy");
-            //SELECT
+                
 
-                string sql;
-                sql =
-                        "select \"Call Outcome name\", count(*)  from public.\"V_1274_ALL_CALLS\" where \"Call start\"::date = '"
-                        + fechaFormat
-                        + "' group by \"Call Outcome name\"";
+               sql =" select count(*) from \"V_1614_TODAS_LAS_LLAMADAS\" where  \"Call start\" ::date = '" + todayDB + "' and \"Campaign Name\" = ''";
 
                 await using var command = new NpgsqlCommand(sql, conn);
                 await using var dataReader = await command.ExecuteReaderAsync();
-                */
+
+                Console.WriteLine("Realizando consultas...");
+
+
+
+
+
                 //EXCEL
 
                 //BUSCADOR DE COLUMNAS
 
                 string fileName = "DAILY_CALL.xls";
 
-
-                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-
-                IWorkbook wb = new HSSFWorkbook(fs);
+                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
 
 
+                
+
+
+
+                    IWorkbook wb = new HSSFWorkbook(fs);
 
                 ISheet ws = wb.GetSheet("Call Disposition");
+                IRow row = ws.GetRow(12);//fechas
+                int columna = 0;
+                bool encontrada = false;
+                
 
 
-                IRow row = ws.GetRow(12);
                 foreach (ICell cell in row)
                 {
-                    //{7/5/19}
-                    if (cell.NumericCellValue.ToString() == today)
+                    
+                    if (cell.ToString()==todaymin)
                     {
-
+                         columna = cell.ColumnIndex;//dia
+                        encontrada = true;
                     }
 
 
 
                 }
-
-                /*
-                Workbook workbook = new Workbook();
-
-                workbook.Open(fileName);
-
-
-                Worksheet ws = wb.Sheet("Call Disposition");
-
-                Row r = ws.Row(13);
-
-                foreach (IXLCell cell in r.Cells()) 
+                //Total Leads Loaded 14
+                //Total Completes 15
+                //Total Contacts 16
+                //Total Elegible Contacts(see Call disposition) 17
+                //Call Back 18
+                if (encontrada)
                 {
-
-                    if (cell.Value.ToString() == today) 
+                    while (await dataReader.ReadAsync()) 
                     {
-
-                        string letraColumna = cell.Address.ColumnLetter;
+                        IRow rowEdit = ws.GetRow(14);
+                        ICell cellEdit = rowEdit.GetCell(columna);
+                        cellEdit.SetBlank();
+                        //cellEdit.SetCellValue(dataReader.GetValue(0).ToString());
+                        cellEdit.SetCellValue("0000000000");
                     }
-
                 }
+                wb.Write(fs);
+                //cannot acces a closed file npoi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                wb.Close();
+               
                 
-                */
 
-
-                //wb.Save();
-
-
-
-
-
-
-
-
+                    conn.Close();
                 //conn.Close();
             }
             catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
 
 
@@ -156,43 +148,32 @@ namespace DST_AON_INFORMES
         {
             Console.WriteLine("2 ok");
         }
-        private static string CheckDate(string? fecha)
+       
+        /// <summary>
+        /// Coge la fecha de hoy con los diferents formatos
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static string GetToday( int type)
         {
-            bool chValidity = false;
-            while (!chValidity)
+            string fecha = "";
+            switch (type)
             {
-                DateTime d;
-                if (string.IsNullOrEmpty(fecha))
-                {
-                    fecha = DateTime.Now.ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    //CHECK FECHA FORMAT
-                    chValidity = DateTime.TryParseExact(
-                        fecha,
-                        "dd/MM/yyyy",
-                        null,
-                        DateTimeStyles.None,
-                        out d
-                    );
-                    if (!chValidity)
-                    {
-                        Console.WriteLine(
-                            "El formato de fecha introducido " + fecha + " no es correcto."
-                        );
-                        Console.WriteLine("Fecha dd/mm/yyyy (enter para fecha de hoy):");
-                        fecha = Console.ReadLine();
-                    }
-                }
+                case 1:
+                    fecha = DateTime.Now.ToString("d/M/yy");
+                    break;
+                case 2: DateTime.Now.ToString("dd/MM/yyyy");
+                    break;
+
+                case 3:
+                    fecha = DateTime.Now.ToString("MM/dd/yyyy");
+                    break;
+                default: fecha = DateTime.Now.ToString();
+
+                break;
+
             }
-            return fecha;
-        }
-        private static string GetToday()
-        {
-          
-              string fecha = DateTime.Now.ToString("dd/MM/yyyy");
-               
+
             return fecha;
         }
     }
